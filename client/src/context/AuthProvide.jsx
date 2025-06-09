@@ -45,7 +45,7 @@ export const UserAuthProvider = ({ children }) => {
         }
 
         try {
-            const serverResponse = await httpClient.post('http://localhost:5125/api/auth/refresh-token', {
+            const serverResponse = await httpClient.post('https://lera-diplom-api.onrender.com/api/auth/refresh-token', {
                 refreshToken: storedRefreshToken,
             });
 
