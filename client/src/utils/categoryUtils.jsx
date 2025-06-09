@@ -15,27 +15,26 @@ import HealthAndSafetyIcon from '@mui/icons-material/HealthAndSafety';
 import SmartphoneIcon from '@mui/icons-material/Smartphone';
 
 const incomeCategories = [
-    { title: 'Deposit', icon: <AccountBalanceIcon /> },
-    { title: 'Salary', icon: <AttachMoneyIcon /> },
-    { title: 'Savings', icon: <SavingsIcon /> },
+    { title: 'Пасивний дохід', icon: <AccountBalanceIcon /> },
+    { title: 'Заробітня плата', icon: <AttachMoneyIcon /> },
+    { title: 'Накопичення', icon: <SavingsIcon /> },
 ];
 
 const outcomeCategories = [
-    { title: 'Bills', icon: <HomeIcon /> },
-    { title: 'Car', icon: <DirectionsCarIcon /> },
-    { title: 'Clothes', icon: <ShoppingCartIcon /> },
-    { title: 'Communication', icon: <SmartphoneIcon /> },
-    { title: 'Eating Out', icon: <FastfoodIcon /> },
-    { title: 'Entertainment', icon: <MovieIcon /> },
-    { title: 'Food', icon: <FastfoodIcon /> },
-    { title: 'Gifts', icon: <CardGiftcardIcon /> },
-    { title: 'Health', icon: <HealthAndSafetyIcon /> },
-    { title: 'House', icon: <HomeIcon /> },
-    { title: 'Pets', icon: <PetsIcon /> },
-    { title: 'Sports', icon: <FitnessCenterIcon /> },
-    { title: 'Taxi', icon: <CommuteIcon /> },
-    { title: 'Toiletry', icon: <SpaIcon /> },
-    { title: 'Transport', icon: <CommuteIcon /> },
+    { title: 'Податки', icon: <HomeIcon /> },
+    { title: 'Автомобіль', icon: <DirectionsCarIcon /> },
+    { title: 'Одяг', icon: <ShoppingCartIcon /> },
+    { title: `Зв'язок`, icon: <SmartphoneIcon /> },
+    { title: 'Кафе/ресторани', icon: <FastfoodIcon /> },
+    { title: 'Розваги', icon: <MovieIcon /> },
+    { title: 'Їжа', icon: <FastfoodIcon /> },
+    { title: 'Подарунки', icon: <CardGiftcardIcon /> },
+    { title: `Здоров'я`, icon: <HealthAndSafetyIcon /> },
+    { title: 'Проживання', icon: <HomeIcon /> },
+    { title: 'Хатні улюбленці', icon: <PetsIcon /> },
+    { title: 'Спорт', icon: <FitnessCenterIcon /> },
+    { title: 'Транспорт', icon: <CommuteIcon /> },
+    { title: 'Побутові витрати', icon: <SpaIcon /> },
 ];
 
 export { incomeCategories, outcomeCategories };

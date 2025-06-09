@@ -8,10 +8,8 @@ import {
     TextField,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import {useTranslation} from 'react-i18next';
 
 function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
-    const {t} = useTranslation(); // Importing the translation function
     const [transaction, setTransaction] = useState({
         description: '',
         category: '',
@@ -19,11 +17,16 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
         type: modalType,
     });
 
+    const [errors, setErrors] = useState({
+        description: false,
+        amount: false,
+    });
+
     const handleChange = (field, value) => {
         setTransaction((prev) => ({...prev, [field]: value}));
+        setErrors((prev) => ({...prev, [field]: false})); // Reset the error state on value change
     };
 
-    // Clear form values
     const resetForm = () => {
         setTransaction({
             description: '',
@@ -31,16 +34,28 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
             amount: '',
             type: modalType,
         });
+        setErrors({
+            description: false,
+            amount: false,
+        });
+    };
+
+    const validateForm = () => {
+        const newErrors = {
+            description: transaction.description.trim() === '',
+            amount: transaction.amount <= 0 || transaction.amount === '',
+        };
+        setErrors(newErrors);
+        return !newErrors.description && !newErrors.amount;
     };
 
     const handleSubmit = () => {
-        if (transaction.category && transaction.description && transaction.amount) {
+        if (validateForm()) {
             onSubmit(transaction);
             resetForm();
         }
     };
 
-    // Close modal on outside click
     const handleOutsideClick = (e) => {
         if (e.target.id === 'modal-container') {
             onClose();
@@ -78,7 +93,6 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                     boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.25)',
                 }}
             >
-                {/* Close Button */}
                 <IconButton
                     onClick={onClose}
                     sx={{
@@ -89,46 +103,51 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                         '&:hover': {color: '#000'},
                     }}
                 >
-                    <CloseIcon/>
+                    <CloseIcon />
                 </IconButton>
 
-                {/* Modal Title */}
                 <Typography
                     variant="h6"
                     sx={{mb: 3, fontWeight: 'bold', textAlign: 'center'}}
                 >
-                    {modalType === 'add' ? t('Add Income') : t('Add Outcome')}
+                    {modalType === 'add' ? 'Додати дохід' : 'Додати витрату'}
                 </Typography>
 
-                {/* Form Fields */}
                 <Box sx={{mb: 3}}>
                     <TextField
                         fullWidth
-                        label={t('Description')}
+                        label="Опис"
                         variant="outlined"
                         size="small"
                         value={transaction.description}
                         onChange={(e) => handleChange('description', e.target.value)}
+                        error={errors.description}
+                        helperText={errors.description ? 'Опис не може бути порожнім' : ''}
                         sx={{mb: 2}}
                     />
 
                     <TextField
                         fullWidth
                         type="number"
-                        label={t('Amount')}
+                        label="Сума"
                         variant="outlined"
                         size="small"
                         value={transaction.amount}
-                        onChange={(e) => handleChange('amount', e.target.value)}
+                        onChange={(e) =>
+                            handleChange('amount', parseFloat(e.target.value))
+                        }
+                        error={errors.amount}
+                        helperText={
+                            errors.amount ? 'Сума має бути додатнім числом' : ''
+                        }
                         sx={{mb: 3}}
                     />
 
                     <Typography gutterBottom variant="body1" fontWeight="bold">
-                        {t('Select Category')}
+                        Оберіть категорію
                     </Typography>
                 </Box>
 
-                {/* Category Selector */}
                 <Grid container spacing={2}>
                     {categories.map((item, index) => (
                         <Grid item xs={4} sm={3} md={2} key={index}>
@@ -150,15 +169,17 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                                 }}
                             >
                                 {item.icon}
-                                <Typography variant="caption" sx={{mt: 1, textAlign: 'center'}}>
-                                    {t(item.title)}
+                                <Typography
+                                    variant="caption"
+                                    sx={{mt: 1, textAlign: 'center'}}
+                                >
+                                    {item.title}
                                 </Typography>
                             </Box>
                         </Grid>
                     ))}
                 </Grid>
 
-                {/* Buttons */}
                 <Box sx={{display: 'flex', justifyContent: 'flex-end', mt: 4}}>
                     <Button
                         onClick={handleSubmit}
@@ -172,7 +193,7 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                             borderRadius: 2,
                         }}
                     >
-                        {modalType === 'income' ? t('Add Income') : t('Add Outcome')}
+                        {modalType === 'income' ? 'Додати дохід' : 'Додати витрату'}
                     </Button>
                     <Button
                         onClick={onClose}
@@ -187,7 +208,7 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                             borderRadius: 2,
                         }}
                     >
-                        {t('Cancel')}
+                        Скасувати
                     </Button>
                 </Box>
             </Box>

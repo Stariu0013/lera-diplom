@@ -15,7 +15,7 @@ const OutcomeChart = ({ transactions }) => {
         labels: Object.keys(grouped),
         datasets: [
             {
-                label: 'Expenses',
+                label: 'Витрати',
                 data: Object.values(grouped),
                 backgroundColor: [
                     '#f21818', '#f26f18', '#f2c718', '#c7f218', '#007A33', '#00CFC1', '#5B00AE', '#1847f2',
@@ -28,7 +28,7 @@ const OutcomeChart = ({ transactions }) => {
 
     return transactions ? (
         <div className="max-w-md mx-auto mt-6">
-            <h2 className="text-xl font-bold mb-2">Outcome Chart</h2>
+            <h2 className="text-xl font-bold mb-2">Графік витрат</h2>
             <Pie data={data} />
         </div>
     ) : null;

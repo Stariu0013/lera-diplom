@@ -14,7 +14,7 @@ import IncomeChart from "../../components/Chart/IncomeChart.jsx";
 import axiosInstance from "../../helpers/axios.js";
 import CategoryExpenseChart from "../../components/Chart/CategoryExpenseChart.jsx";
 import IncomeComparisonChart from "../../components/Chart/IncomeComparisonChart.jsx";
-import {getCategoryInsights, getOverBudgetMessage} from "../../utils/getCategoryInsights.js";
+import { getCategoryInsights, getOverBudgetMessage } from "../../utils/getCategoryInsights.js";
 
 function BudgetTracker() {
     const { transactions, setTransactions, addTransaction, deleteTransaction } = useTransactions();
@@ -28,7 +28,6 @@ function BudgetTracker() {
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [errors, setErrors] = useState({ budget: '', months: '' });
-
     const [isUseIncome, setIsUseIncome] = useState(false);
 
     const years = Array.from(new Set(transactions.map(t => new Date(t.createdAt).getFullYear())));
@@ -52,42 +51,55 @@ function BudgetTracker() {
         setBudget(isUseIncome ? filteredIncome : filteredOutcome);
     }, [filteredOutcome, isUseIncome]);
 
+    const submitAnalysisData = async (filteredTransactions, budget, onSuccess, onError) => {
+        try {
+            const response = await axiosInstance.post('/analysis', {
+                transactions: filteredTransactions,
+                budget,
+            });
+            onSuccess(response);
+        } catch (error) {
+            console.error(error);
+            onError(error);
+        }
+    };
+
     const handleSubmitData = () => {
         const newErrors = { budget: '', months: '' };
 
         if (budget <= 0) {
-            newErrors.budget = 'Budget must be greater than 0';
+            newErrors.budget = 'Бюджет має бути більшим за 0';
         }
 
         setErrors(newErrors);
 
         if (newErrors.months) {
-            toast.error('Please fix the errors before submitting.');
+            toast.error('Виправте помилки перед надсиланням.');
             return;
         }
 
-        axiosInstance.post('/analysis', {
-            transactions: filteredTransactions,
+        submitAnalysisData(
+            filteredTransactions,
             budget,
-        }).then(response => {
-            console.log(response);
-            setAnalysisData(response.data);
-            toast.success('Analysis data submitted successfully!');
-            setDataModalOpen(false);
-            setBudget(0);
-        }).catch(error => {
-            console.error(error);
-            toast.error('Failed to submit analysis data!');
-        });
+            response => {
+                setAnalysisData(response.data);
+                toast.success('Дані для аналізу успішно надіслані!');
+                setDataModalOpen(false);
+                setBudget(0);
+            },
+            () => {
+                toast.error('Не вдалося надіслати дані для аналізу!');
+            }
+        );
     };
 
     const handleAddTransaction = transaction => {
         if (transaction.amount < 1) {
-            toast.error('Amount must be greater than or equal to 1.');
+            toast.error('Сума має бути більша або дорівнювати 1.');
             return;
         }
         if (!transaction.description || !transaction.amount) {
-            toast.error('All fields are required.');
+            toast.error('Усі поля є обов’язковими.');
             return;
         }
         addTransaction({
@@ -95,7 +107,7 @@ function BudgetTracker() {
             type: modalType,
         });
         setModalOpen(false);
-        toast.success(`${modalType === 'income' ? 'Income' : 'Outcome'} added successfully!`);
+        toast.success(`${modalType === 'income' ? 'Дохід' : 'Витрата'} успішно додано!`);
     };
 
     const overBudgetMessage = analysisData ?
@@ -127,7 +139,7 @@ function BudgetTracker() {
                 component="h1"
                 sx={{ fontWeight: 600, color: 'primary.main', mb: 2 }}
             >
-                💰 Budget Tracker
+                💰 Трекер бюджету
             </Typography>
 
             <FileUploader onFileUpload={setCsvFile} onSucceed={setTransactions} csvFile={csvFile} />
@@ -149,7 +161,7 @@ function BudgetTracker() {
                 sx={{ my: 2 }}
                 onClick={() => setDataModalOpen(true)}
             >
-                Open Analysis Modal
+                Відкрити модальне вікно аналізу
             </Button>
 
             <Modal
@@ -172,13 +184,13 @@ function BudgetTracker() {
                     }}
                 >
                     <Typography id="modal-title" variant="h6" component="h2">
-                        Submit Analysis Data
+                        Надіслати дані аналізу
                     </Typography>
 
                     {/* Radio Toggler */}
                     <Box sx={{ mt: 2 }}>
                         <Typography variant="body1" sx={{ mb: 1 }}>
-                            Set Budget Source:
+                            Виберіть джерело:
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 2 }}>
                             <Button
@@ -186,26 +198,26 @@ function BudgetTracker() {
                                 color="primary"
                                 onClick={() => setIsUseIncome(true)}
                             >
-                                Use Income
+                                Використати доходи
                             </Button>
                             <Button
                                 variant={!isUseIncome ? "contained" : "outlined"}
                                 color="primary"
                                 onClick={() => setIsUseIncome(false)}
                             >
-                                Use Outcome
+                                Використати витрати
                             </Button>
                         </Box>
                     </Box>
 
                     <TextField
                         fullWidth
-                        label="Budget"
+                        label="Бюджет"
                         type="number"
                         value={budget}
                         onChange={(e) => {
                             setBudget(+e.target.value);
-                            setErrors((prev) => ({ ...prev, budget: '' })); // Clear error on change
+                            setErrors((prev) => ({ ...prev, budget: '' })); // Очищення помилки при зміні
                         }}
                         sx={{ mt: 2 }}
                         error={!!errors.budget}
@@ -214,10 +226,9 @@ function BudgetTracker() {
 
                     <Typography
                         id="modal-title"
-                        variant="h6"
                         component="h2"
                         sx={{
-                            fontSize: { xs: '0.8rem', sm: '1.25rem', md: '1.5rem', },
+                            fontSize: '1rem',
                             textAlign: { xs: 'left', sm: 'center', },
                         }}
                     >
@@ -236,14 +247,14 @@ function BudgetTracker() {
                             color="primary"
                             onClick={handleSubmitData}
                         >
-                            Submit
+                            Надіслати
                         </Button>
                         <Button
                             variant="outlined"
                             color="secondary"
                             onClick={() => setDataModalOpen(false)}
                         >
-                            Cancel
+                            Скасувати
                         </Button>
                     </Box>
                 </Box>
@@ -252,19 +263,19 @@ function BudgetTracker() {
             <Box
                 sx={{
                     display: 'flex',
-                    flexDirection: { xs: 'column', sm: 'row' }, // Column for extra small screens, row for small and above
-                    justifyContent: { xs: 'flex-start', sm: 'center' }, // Align left on mobile, center on larger screens
+                    flexDirection: { xs: 'column', sm: 'row' },
+                    justifyContent: { xs: 'flex-start', sm: 'center' },
                     gap: 2,
                     mb: 3,
                 }}
             >
-                <Box sx={{ textAlign: { xs: 'left', sm: 'center' } }}> {/* Align text left on small devices */}
-                    <Typography variant="h6">Filter by Month</Typography>
+                <Box sx={{ textAlign: { xs: 'left', sm: 'center' } }}>
+                    <Typography variant="h6">Фільтр за місяцем</Typography>
                     <Select
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
                         sx={{
-                            width: { xs: '100%', sm: 200 }, // Full-width on mobile, fixed width on larger screens
+                            width: { xs: '100%', sm: 200 },
                             mt: 1,
                         }}
                     >
@@ -275,13 +286,13 @@ function BudgetTracker() {
                         ))}
                     </Select>
                 </Box>
-                <Box sx={{ textAlign: { xs: 'left', sm: 'center' } }}> {/* Align text left on small devices */}
-                    <Typography variant="h6">Filter by Year</Typography>
+                <Box sx={{ textAlign: { xs: 'left', sm: 'center' } }}>
+                    <Typography variant="h6">Фільтр за роком</Typography>
                     <Select
                         value={selectedYear}
                         onChange={(e) => setSelectedYear(e.target.value)}
                         sx={{
-                            width: { xs: '100%', sm: 200 }, // Full-width on mobile, fixed width on larger screens
+                            width: { xs: '100%', sm: 200 },
                             mt: 1,
                         }}
                     >
@@ -297,7 +308,7 @@ function BudgetTracker() {
 
             <Box sx={{ mb: 4 }}>
                 <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, mt: 1 }}>
-                    Transactions Overview
+                    Огляд Транзакцій
                 </Typography>
                 <Box
                     sx={{
@@ -309,41 +320,34 @@ function BudgetTracker() {
                     <OutcomeChart transactions={filteredTransactions} />
                     <IncomeChart transactions={filteredTransactions} />
                 </Box>
-
             </Box>
 
             {analysisData && (
                 <Box sx={{ mt: 4 }}>
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                        Analysis Insights
+                        Аналітичні Інсайти
                     </Typography>
 
-                    {/* Expense Breakdown by Category */}
                     <CategoryExpenseChart data={analysisData.categoryStats} />
 
-                    {/* Monthly Income Comparison */}
                     <IncomeComparisonChart data={analysisData.monthlyIncome} />
 
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                         Пояснення для аналізу
                     </Typography>
 
-                    {/* Показуємо повідомлення про бюджет */}
                     <Typography sx={{ mb: 2 }}>
                         {overBudgetMessage}
                     </Typography>
 
-                    {/* Показуємо рекомендації по категоріях */}
                     <Typography>
                         📊 Найбільша витрата: {categoryInsights.mostExpensiveCategory} ({categoryInsights.mostExpensivePercentage}%).
                     </Typography>
                     <Typography>
                         🛠 Найменша витрата: {categoryInsights.leastExpensiveCategory} ({categoryInsights.leastExpensivePercentage}%).
                     </Typography>
-
                 </Box>
             )}
-
 
             <TransactionList transactions={filteredTransactions} deleteTransaction={deleteTransaction} />
 

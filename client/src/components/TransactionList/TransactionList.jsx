@@ -1,11 +1,8 @@
 import { List, ListItem, ListItemText, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { memo } from 'react';
-import { useTranslation } from 'react-i18next';
 
 const TransactionList = memo(({ transactions, deleteTransaction }) => {
-    const { t: ttag } = useTranslation();
-
     const listStyles = {
         maxHeight: '300px',
         overflowY: 'auto',
@@ -24,7 +21,7 @@ const TransactionList = memo(({ transactions, deleteTransaction }) => {
                 >
                     <ListItemText
                         primary={`${t.description} - $${t.amount}`}
-                        secondary={`${t.type ? ttag('Type', { context: t.type }) : ttag('Type')}`}
+                        secondary={`Тип: ${t.type === 'outcome'? 'Витрати': 'Доходи'}`}
                     />
                 </ListItem>
             ))}

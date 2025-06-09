@@ -1,10 +1,8 @@
-import {useAuth} from "../../context/AuthProvide.jsx";
 import {useLocation, useNavigate} from "react-router-dom";
 import {useState, useEffect, useMemo, useCallback} from "react";
 import axiosInstance from "../../helpers/axios.js";
 
 export const useApp = () => {
-    const {logout} = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -31,12 +29,13 @@ export const useApp = () => {
             const response = await axiosInstance.post("/auth/signin", data);
 
             if (response.status === 200) {
-                const {token, refreshToken, username, userId} = response.data;
+                const {token, refreshToken, username, email, userId} = response.data;
 
                 setIsAuth(true);
                 localStorage.setItem("accessToken", token);
                 localStorage.setItem("refreshToken", refreshToken);
                 localStorage.setItem("userName", username);
+                localStorage.setItem("email", email);
                 localStorage.setItem("userId", userId);
             }
         } catch (error) {
@@ -54,7 +53,6 @@ export const useApp = () => {
         isAuth,
         signUp,
         signIn,
-        logout,
         isSignUpPage,
         toggleAuthForm,
     };

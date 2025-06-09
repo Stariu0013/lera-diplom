@@ -1,41 +1,35 @@
 import { TextField, Button, Typography, Box, Paper, Grid } from '@mui/material';
-import {useSignUp} from "./useSignUp.jsx";
+import { useRegistration } from "./useRegistration";
 
-const SignUpForm = ({ signUp }) => {
+const RegistrationForm = ({ signUp }) => {
     const {
-        confirmPassword,
-        email,
-        password,
-        setPassword,
-        formError,
+        formValues,
         errors,
-        setConfirmPassword,
-        setEmail,
-        username,
-        setUsername,
-        handleSubmit
-    } = useSignUp({signUp});
+        globalError,
+        handleInputChange,
+        handleFormSubmit
+    } = useRegistration({ registerUser: signUp });
 
     return (
         <Grid container justifyContent="center" alignItems="center" style={{ height: 'calc(100vh - 50px)' }}>
             <Grid item xs={12} sm={6} md={4}>
                 <Paper elevation={3} style={{ padding: '20px' }}>
                     <Typography variant="h4" align="center" gutterBottom>
-                        Sign Up
+                        Зареєструватися
                     </Typography>
-                    {formError && (
+                    {globalError && (
                         <Typography color="error" variant="body2" align="center" gutterBottom>
-                            {formError}
+                            {globalError}
                         </Typography>
                     )}
-                    <form onSubmit={handleSubmit}>
+                    <form onSubmit={handleFormSubmit}>
                         <Box mb={2}>
                             <TextField
                                 fullWidth
-                                label="Username"
+                                label="Ім'я"
                                 variant="outlined"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
+                                value={formValues.username}
+                                onChange={(e) => handleInputChange("username", e.target.value)}
                                 error={!!errors.username}
                                 helperText={errors.username}
                             />
@@ -43,11 +37,11 @@ const SignUpForm = ({ signUp }) => {
                         <Box mb={2}>
                             <TextField
                                 fullWidth
-                                label="Email"
+                                label="Електронна пошта"
                                 variant="outlined"
                                 type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={formValues.email}
+                                onChange={(e) => handleInputChange("email", e.target.value)}
                                 error={!!errors.email}
                                 helperText={errors.email}
                             />
@@ -55,11 +49,11 @@ const SignUpForm = ({ signUp }) => {
                         <Box mb={2}>
                             <TextField
                                 fullWidth
-                                label="Password"
+                                label="Пароль"
                                 variant="outlined"
                                 type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                value={formValues.password}
+                                onChange={(e) => handleInputChange("password", e.target.value)}
                                 error={!!errors.password}
                                 helperText={errors.password}
                             />
@@ -67,18 +61,18 @@ const SignUpForm = ({ signUp }) => {
                         <Box mb={2}>
                             <TextField
                                 fullWidth
-                                label="Confirm Password"
+                                label="Підтвердіть пароль"
                                 variant="outlined"
                                 type="password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                value={formValues.confirmPassword}
+                                onChange={(e) => handleInputChange("confirmPassword", e.target.value)}
                                 error={!!errors.confirmPassword}
                                 helperText={errors.confirmPassword}
                             />
                         </Box>
                         <Box mb={2}>
-                            <Button variant="contained" color="primary" fullWidth type="submit">
-                                Sign Up
+                            <Button variant="outlined" color="secondary" fullWidth type="submit">
+                                Зареєструватися
                             </Button>
                         </Box>
                     </form>
@@ -88,4 +82,4 @@ const SignUpForm = ({ signUp }) => {
     );
 };
 
-export default SignUpForm;
+export default RegistrationForm;

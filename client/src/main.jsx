@@ -3,7 +3,7 @@ import { CssBaseline } from '@mui/material';
 import App from './components/App/App.jsx';
 import {createRoot} from "react-dom/client";
 import {BrowserRouter} from "react-router-dom";
-import {AuthProvider} from "./context/AuthProvide.jsx";
+import {UserAuthProvider} from "./context/AuthProvide.jsx";
 
 const Root = () => {
     return (
@@ -16,9 +16,9 @@ const Root = () => {
 
 createRoot(document.getElementById('root')).render(
     <BrowserRouter>
-        <AuthProvider>
+        <UserAuthProvider>
             <Root />
-        </AuthProvider>
+        </UserAuthProvider>
     </BrowserRouter>,
 )
 

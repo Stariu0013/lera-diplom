@@ -56,6 +56,7 @@ router.post('/signin', async (req, res) => {
             token,
             refreshToken,
             username: user.username,
+            email: user.email,
             userId: user._id
         });
     } catch (err) {

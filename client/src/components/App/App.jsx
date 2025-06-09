@@ -6,12 +6,9 @@ import {useApp} from "./useApp.jsx";
 import {Button, Typography} from "@mui/material";
 import SignUpForm from "../../pages/AuthPage/SignUp/SignUpForm.jsx";
 import {SettingPage} from "../../pages/SettingPage/SettingPage.jsx";
-import { useTranslation } from 'react-i18next';
 import Navbar from "../Navbar/Navbar.jsx";
 
 const AuthRoutes = React.memo(({ signIn, signUp, isSignUpPage, toggleAuthForm }) => {
-    const { t } = useTranslation();
-
     return (
         <>
             <Routes>
@@ -21,17 +18,17 @@ const AuthRoutes = React.memo(({ signIn, signUp, isSignUpPage, toggleAuthForm })
             </Routes>
             <Typography align="center">
                 {isSignUpPage
-                    ? t("auth.alreadyHaveAccount")
-                    : t("auth.noAccount")}{' '}
+                    ? "Ви вже маєте аккаунт?"
+                    : "У вас немає аккаунту?"}{' '}
                 <Button onClick={toggleAuthForm} color="primary">
-                    {isSignUpPage ? t("auth.login") : t("auth.signup")}
+                    {isSignUpPage ? "Увійти" : "Зареєструватися"}
                 </Button>
             </Typography>
         </>
     );
 });
 
-const MainRoutes = React.memo(({ handleLogout }) => {
+const MainRoutes = React.memo(() => {
     return (
         <Routes>
             <Route path="/" element={<BudgetTracker />} />
@@ -41,7 +38,6 @@ const MainRoutes = React.memo(({ handleLogout }) => {
 });
 
 function App() {
-    const { t } = useTranslation();
     const navigate = useNavigate();
     const { isAuth, isSignUpPage, signIn, signUp, toggleAuthForm, logout } = useApp();
 

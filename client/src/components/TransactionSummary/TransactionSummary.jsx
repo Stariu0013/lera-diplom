@@ -1,10 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 const TransactionSummary = ({ income, outcome }) => {
-    const { t } = useTranslation();
-
     let balance = outcome + income;
 
     return (
@@ -17,15 +14,15 @@ const TransactionSummary = ({ income, outcome }) => {
             }}
         >
             <Typography sx={{ fontWeight: 500 }}>
-                <strong>{t('Income')}:</strong>{' '}
+                <strong>Дохід:</strong>{' '}
                 <span style={{ color: '#388e3c' }}>${income.toFixed(2)}</span>
             </Typography>
             <Typography sx={{ fontWeight: 500 }}>
-                <strong>{t('Outcome')}:</strong>{' '}
+                <strong>Витрати:</strong>{' '}
                 <span style={{ color: '#d32f2f' }}>${outcome.toFixed(2).replace('-', '')}</span>
             </Typography>
             <Typography sx={{ fontWeight: 500 }}>
-                <strong>{t('Balance')}:</strong>{' '}
+                <strong>Баланс:</strong>{' '}
                 <span
                     style={{
                         color: balance >= 0 ? '#388e3c' : '#d32f2f',

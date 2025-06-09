@@ -1,76 +1,80 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import { createContext, useContext as useAppContext, useState as useAppState, useEffect } from 'react';
+import { jwtDecode as decodeJWT } from 'jwt-decode';
+import httpClient from 'axios';
+import {useNavigate} from "react-router-dom";
 
-const AuthContext = createContext();
+const UserAuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const [isCheckingToken, setIsCheckingToken] = useState(true);
+export const UserAuthProvider = ({ children }) => {
+    const [currentUser, setCurrentUser] = useAppState(null);
+    const [isTokenVerificationInProgress, setTokenVerificationProgress] = useAppState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        const initializeAuth = async () => {
-            const token = localStorage.getItem('accessToken');
+        const initializeAuthorization = async () => {
+            const storedToken = localStorage.getItem('accessToken');
 
-            if (token) {
+            if (storedToken) {
                 try {
-                    const decodedToken = jwtDecode(token);
-                    const currentTime = Date.now() / 1000;
+                    const parsedToken = decodeJWT(storedToken);
+                    const timeStampNow = Date.now() / 1000;
 
-                    if (decodedToken.exp < currentTime) {
-                        await handleTokenRefresh();
+                    if (parsedToken.exp < timeStampNow) {
+                        await refreshAuthToken();
                     } else {
-                        setUser(decodedToken.user);
+                        setCurrentUser(parsedToken.user);
                     }
-                } catch (err) {
-                    console.error('Invalid token:', err);
+                } catch (error) {
+                    console.error('Error with token:', error);
                     localStorage.removeItem('accessToken');
                     localStorage.removeItem('refreshToken');
                 }
             }
-            setIsCheckingToken(false);
+            setTokenVerificationProgress(false);
         };
 
-        initializeAuth();
+        initializeAuthorization();
     }, []);
 
-    const handleTokenRefresh = async () => {
-        const refreshToken = localStorage.getItem('refreshToken');
+    const refreshAuthToken = async () => {
+        const storedRefreshToken = localStorage.getItem('refreshToken');
 
-        if (!refreshToken) {
-            logout();
+        if (!storedRefreshToken) {
+            handleLogout();
             throw new Error('No refresh token available');
         }
 
         try {
-            const response = await axios.post('http://localhost:5125/api/auth/refresh-token', {
-                refreshToken,
+            const serverResponse = await httpClient.post('http://localhost:5125/api/auth/refresh-token', {
+                refreshToken: storedRefreshToken,
             });
 
-            const { token, refreshToken: newRefreshToken, user } = response.data;
+            const { token: newAccessToken, refreshToken: updatedRefreshToken, user: updatedUser } = serverResponse.data;
 
-            localStorage.setItem('accessToken', token);
-            localStorage.setItem('refreshToken', newRefreshToken);
-            setUser(user);
-        } catch (err) {
-            console.error('Failed to refresh token:', err);
-            logout();
+            localStorage.setItem('accessToken', newAccessToken);
+            localStorage.setItem('refreshToken', updatedRefreshToken);
+            setCurrentUser(updatedUser);
+        } catch (error) {
+            console.error('Failed to refresh token:', error);
+            handleLogout();
         }
     };
 
-    const logout = () => {
-        setUser(null);
+    const handleLogout = () => {
+        setCurrentUser(null);
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
+
+        window.location.href = '/';
     };
 
-    if (isCheckingToken) return <div>Loading...</div>;
+    if (isTokenVerificationInProgress) return <div>Loading...</div>;
 
     return (
-        <AuthContext.Provider value={{ user, setUser, logout, handleTokenRefresh }}>
+        <UserAuthContext.Provider value={{ currentUser, setCurrentUser, handleLogout, refreshAuthToken }}>
             {children}
-        </AuthContext.Provider>
+        </UserAuthContext.Provider>
     );
 };
 
-export const useAuth = () => useContext(AuthContext);
+export const useUserAuth = () => useAppContext(UserAuthContext);

@@ -1,10 +1,7 @@
 import React from 'react';
 import { Button, Box } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 
 const TransactionControls = ({ onAddIncome, onAddOutcome }) => {
-    const { t } = useTranslation();
-
     return (
         <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
             <Button
@@ -18,7 +15,7 @@ const TransactionControls = ({ onAddIncome, onAddOutcome }) => {
                 }}
                 onClick={onAddIncome}
             >
-                {t('Add Income')}
+                Додати дохід
             </Button>
             <Button
                 variant="contained"
@@ -31,7 +28,7 @@ const TransactionControls = ({ onAddIncome, onAddOutcome }) => {
                 }}
                 onClick={onAddOutcome}
             >
-                {t('Add Outcome')}
+                Додати витрату
             </Button>
         </Box>
     );
