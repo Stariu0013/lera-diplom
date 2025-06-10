@@ -52,7 +52,7 @@ export async function seedTransactionsFromCsv(csvFile, callback) {
             };
         });
 
-        axios.post('https://lera-diplom.onrender.com/api/transactions/bulk', transactionsForDb, {
+        axios.post('http://localhost:5125/api/transactions/bulk', transactionsForDb, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
             },

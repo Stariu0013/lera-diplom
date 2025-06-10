@@ -20,7 +20,7 @@ const TransactionList = memo(({ transactions, deleteTransaction }) => {
                     }
                 >
                     <ListItemText
-                        primary={`${t.description} - $${t.amount}`}
+                        primary={`${t.description} - ₴${t.amount}`}
                         secondary={`Тип: ${t.type === 'outcome'? 'Витрати': 'Доходи'}`}
                     />
                 </ListItem>

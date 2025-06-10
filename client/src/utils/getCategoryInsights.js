@@ -15,16 +15,26 @@ function getCategoryInsights(categoryStats) {
     };
 }
 
-function getOverBudgetMessage(overBudget, averageExpense, predictedExpense) {
-    if (overBudget) {
+function getOverBudgetMessage(overBudget, averageExpense, predictedExpense, monthlyIncome) {
+    const absAverageExpense = Math.abs(averageExpense);
+    const absPredictedExpense = Math.abs(predictedExpense);
+
+    const remainingBudget = monthlyIncome - absPredictedExpense;
+
+    if (remainingBudget < 0) {
         return (
-            `⚠️ Передбачувані витрати (${predictedExpense} грн) перевищують ваш середній бюджет (${averageExpense} грн). ` +
-            `Рекомендуємо скоротити витрати, щоб уникнути фінансових труднощів.`
+            `⚠️ Передбачувані витрати (${absPredictedExpense} грн) перевищують ваш дохід (${monthlyIncome} грн), залишок становить ${remainingBudget.toFixed(2)} грн. ` +
+            `Рекомендуємо негайно скоротити витрати!`
+        );
+    } else if (overBudget) {
+        return (
+            `⚠️ Передбачувані витрати (${absPredictedExpense} грн) перевищують ваш середній бюджет (${absAverageExpense} грн). ` +
+            `Залишок після врахування доходу: ${remainingBudget.toFixed(2)} грн. Будьте обережні з витратами!`
         );
     } else {
         return (
-            `✅ Ваші передбачувані витрати (${predictedExpense} грн) знаходяться в межах бюджету (${averageExpense} грн). ` +
-            `Добра робота! Продовжуйте слідкувати за витратами.`
+            `✅ Ваші передбачувані витрати (${absPredictedExpense} грн) знаходяться в межах доступного доходу (${monthlyIncome} грн) і середнього бюджету (${absAverageExpense} грн). ` +
+            `Залишок: ${remainingBudget.toFixed(2)} грн. Добра робота!`
         );
     }
 }

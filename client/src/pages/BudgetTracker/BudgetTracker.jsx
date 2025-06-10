@@ -110,12 +110,15 @@ function BudgetTracker() {
         toast.success(`${modalType === 'income' ? 'Дохід' : 'Витрата'} успішно додано!`);
     };
 
+    console.log(analysisData)
+
     const overBudgetMessage = analysisData ?
         getOverBudgetMessage(
             analysisData.forecast.overBudget,
             analysisData.forecast.averageExpense,
-            analysisData.forecast.predictedExpense
-        ) : '';
+            analysisData.forecast.predictedExpense,
+            analysisData.monthlyIncome["2025-06"]
+    ) : '';
 
     const categoryInsights = analysisData
         ? getCategoryInsights(analysisData.categoryStats)

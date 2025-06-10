@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'https://lera-diplom.onrender.com/api/transactions';
+const API_URL = 'http://localhost:5125/api/transactions';
 
 const fetchTransactions = async () => {
     const { data } = await axios.get(API_URL, {

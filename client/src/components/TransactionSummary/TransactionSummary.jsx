@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography } from '@mui/material';
 
 const TransactionSummary = ({ income, outcome }) => {
-    let balance = outcome + income;
+    let balance = outcome < 0 ? income + outcome : income - outcome;
 
     return (
         <Box
@@ -15,11 +15,11 @@ const TransactionSummary = ({ income, outcome }) => {
         >
             <Typography sx={{ fontWeight: 500 }}>
                 <strong>Дохід:</strong>{' '}
-                <span style={{ color: '#388e3c' }}>${income.toFixed(2)}</span>
+                <span style={{ color: '#388e3c' }}>₴{income.toFixed(2)}</span>
             </Typography>
             <Typography sx={{ fontWeight: 500 }}>
                 <strong>Витрати:</strong>{' '}
-                <span style={{ color: '#d32f2f' }}>${outcome.toFixed(2).replace('-', '')}</span>
+                <span style={{ color: '#d32f2f' }}>₴{outcome.toFixed(2).replace('-', '')}</span>
             </Typography>
             <Typography sx={{ fontWeight: 500 }}>
                 <strong>Баланс:</strong>{' '}
@@ -28,7 +28,7 @@ const TransactionSummary = ({ income, outcome }) => {
                         color: balance >= 0 ? '#388e3c' : '#d32f2f',
                     }}
                 >
-                    ${balance.toFixed(2)}
+                    ₴{balance.toFixed(2)}
                 </span>
             </Typography>
         </Box>

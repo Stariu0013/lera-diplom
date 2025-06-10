@@ -9,6 +9,10 @@ import axios from '../../helpers/axios.js';
 import {toast} from "react-toastify";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {useUserAuth} from "../../context/AuthProvide.jsx";
+import 'dayjs/locale/uk';
+import dayjs from "dayjs";
+
+dayjs.locale('uk');
 
 export const SettingPage = () => {
     const [modalOpen, setModalOpen] = useState(false);
@@ -21,7 +25,7 @@ export const SettingPage = () => {
 
     const fetchSubscribedItems = async (setSubscribedItems) => {
         try {
-            const response = await axios.get('https://lera-diplom.onrender.com/api/subscriptions');
+            const response = await axios.get('http://localhost:5125/api/subscriptions');
             setSubscribedItems(response.data);
         } catch (error) {
             console.error('Помилка під час отримання підписок:', error);
@@ -62,7 +66,7 @@ export const SettingPage = () => {
 
     const saveSubscription = async (data, handleModalClose, setSubscribedItems) => {
         try {
-            const response = await axios.post('https://lera-diplom.onrender.com/api/subscribe', data, {
+            const response = await axios.post('http://localhost:5125/api/subscribe', data, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
@@ -95,7 +99,7 @@ export const SettingPage = () => {
     };
 
     const removeSubscription = (id) => {
-        axios.delete(`https://lera-diplom.onrender.com/api/subscriptions/${id}`).then(res => {
+        axios.delete(`http://localhost:5125/api/subscriptions/${id}`).then(res => {
             const deletedItemId = res.data.deletedSubscription._id;
 
             setSubscribedItems((prevItems) => prevItems.filter((item) => item.id !== deletedItemId));
@@ -164,8 +168,8 @@ export const SettingPage = () => {
                         />
                         {errors.type && <p style={{color: 'red'}}>{errors.type}</p>}
                     </div>
-                    <div style={{marginBottom: '16px'}}>
-                        <label style={{ display: 'block'}}>Дата: </label>
+                    <div style={{ marginBottom: '16px' }}>
+                        <label style={{ display: 'block' }}>Дата: </label>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DatePicker
                                 value={selectedDate}
@@ -173,7 +177,7 @@ export const SettingPage = () => {
                                 renderInput={(params) => <input {...params} />}
                             />
                         </LocalizationProvider>
-                        {errors.date && <p style={{color: 'red'}}>{errors.date}</p>}
+                        {errors.date && <p style={{ color: 'red' }}>{errors.date}</p>}
                     </div>
                     <div style={{marginBottom: '16px'}}>
                         <label>Сума: </label>
