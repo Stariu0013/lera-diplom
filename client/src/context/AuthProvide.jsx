@@ -1,14 +1,12 @@
 import { createContext, useContext as useAppContext, useState as useAppState, useEffect } from 'react';
 import { jwtDecode as decodeJWT } from 'jwt-decode';
 import httpClient from 'axios';
-import {useNavigate} from "react-router-dom";
 
 const UserAuthContext = createContext();
 
 export const UserAuthProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useAppState(null);
     const [isTokenVerificationInProgress, setTokenVerificationProgress] = useAppState(true);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const initializeAuthorization = async () => {
@@ -45,7 +43,7 @@ export const UserAuthProvider = ({ children }) => {
         }
 
         try {
-            const serverResponse = await httpClient.post('https://lera-diplom-api.onrender.com/api/auth/refresh-token', {
+            const serverResponse = await httpClient.post('https://lera-diplom.onrender.com/api/auth/refresh-token', {
                 refreshToken: storedRefreshToken,
             });
 
