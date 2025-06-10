@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const express = require('express');
-const Transaction = require('../models/Transaction');
+const Transaction = require('../models/transaction');
 const {verify} = require("jsonwebtoken");
 const router = express.Router();
 

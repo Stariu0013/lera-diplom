@@ -1,7 +1,7 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const router = express.Router();
-const Subscription = require('../models/Subscription');
+const Subscription = require('../models/subscription');
 
 router.post('/subscribe', async (req, res) => {
     const { type, date, email, price } = req.body;
