@@ -25,7 +25,7 @@ export const SettingPage = () => {
 
     const fetchSubscribedItems = async (setSubscribedItems) => {
         try {
-            const response = await axios.get('http://localhost:5125/api/subscriptions');
+            const response = await axios.get('https://lera-diplom.onrender.com/api/subscriptions');
             setSubscribedItems(response.data);
         } catch (error) {
             console.error('Помилка під час отримання підписок:', error);
@@ -66,7 +66,7 @@ export const SettingPage = () => {
 
     const saveSubscription = async (data, handleModalClose, setSubscribedItems) => {
         try {
-            const response = await axios.post('http://localhost:5125/api/subscribe', data, {
+            const response = await axios.post('https://lera-diplom.onrender.com/api/subscribe', data, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
                 },
@@ -99,7 +99,7 @@ export const SettingPage = () => {
     };
 
     const removeSubscription = (id) => {
-        axios.delete(`http://localhost:5125/api/subscriptions/${id}`).then(res => {
+        axios.delete(`https://lera-diplom.onrender.com/api/subscriptions/${id}`).then(res => {
             const deletedItemId = res.data.deletedSubscription._id;
 
             setSubscribedItems((prevItems) => prevItems.filter((item) => item.id !== deletedItemId));
