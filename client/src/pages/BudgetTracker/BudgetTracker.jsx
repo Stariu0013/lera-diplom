@@ -48,8 +48,8 @@ function BudgetTracker() {
         .reduce((sum, transaction) => sum + transaction.amount, 0) || 0;
 
     useEffect(() => {
-        setBudget(isUseIncome ? filteredIncome : filteredOutcome);
-    }, [filteredOutcome, isUseIncome]);
+        setBudget(filteredIncome);
+    }, [filteredOutcome]);
 
     const submitAnalysisData = async (filteredTransactions, budget, onSuccess, onError) => {
         try {
@@ -65,19 +65,6 @@ function BudgetTracker() {
     };
 
     const handleSubmitData = () => {
-        const newErrors = { budget: '', months: '' };
-
-        if (budget <= 0) {
-            newErrors.budget = 'Бюджет має бути більшим за 0';
-        }
-
-        setErrors(newErrors);
-
-        if (newErrors.months) {
-            toast.error('Виправте помилки перед надсиланням.');
-            return;
-        }
-
         submitAnalysisData(
             filteredTransactions,
             budget,
@@ -110,14 +97,13 @@ function BudgetTracker() {
         toast.success(`${modalType === 'income' ? 'Дохід' : 'Витрата'} успішно додано!`);
     };
 
-    console.log(analysisData)
-
     const overBudgetMessage = analysisData ?
         getOverBudgetMessage(
             analysisData.forecast.overBudget,
             analysisData.forecast.averageExpense,
             analysisData.forecast.predictedExpense,
-            analysisData.monthlyIncome["2025-06"]
+            analysisData.monthlyIncome["2025-06"],
+            analysisData.inflationRate
     ) : '';
 
     const categoryInsights = analysisData
@@ -157,111 +143,6 @@ function BudgetTracker() {
                     setModalOpen(true);
                 }}
             />
-
-            <Button
-                variant="contained"
-                color="primary"
-                sx={{ my: 2 }}
-                onClick={() => setDataModalOpen(true)}
-            >
-                Відкрити модальне вікно аналізу
-            </Button>
-
-            <Modal
-                open={dataModalOpen}
-                onClose={() => setDataModalOpen(false)}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
-            >
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: 400,
-                        bgcolor: 'background.paper',
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: 2,
-                    }}
-                >
-                    <Typography id="modal-title" variant="h6" component="h2">
-                        Надіслати дані аналізу
-                    </Typography>
-
-                    {/* Radio Toggler */}
-                    <Box sx={{ mt: 2 }}>
-                        <Typography variant="body1" sx={{ mb: 1 }}>
-                            Виберіть джерело:
-                        </Typography>
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <Button
-                                variant={isUseIncome ? "contained" : "outlined"}
-                                color="primary"
-                                onClick={() => setIsUseIncome(true)}
-                            >
-                                Використати доходи
-                            </Button>
-                            <Button
-                                variant={!isUseIncome ? "contained" : "outlined"}
-                                color="primary"
-                                onClick={() => setIsUseIncome(false)}
-                            >
-                                Використати витрати
-                            </Button>
-                        </Box>
-                    </Box>
-
-                    <TextField
-                        fullWidth
-                        label="Бюджет"
-                        type="number"
-                        value={budget}
-                        onChange={(e) => {
-                            setBudget(+e.target.value);
-                            setErrors((prev) => ({ ...prev, budget: '' })); // Очищення помилки при зміні
-                        }}
-                        sx={{ mt: 2 }}
-                        error={!!errors.budget}
-                        helperText={errors.budget}
-                    />
-
-                    <Typography
-                        id="modal-title"
-                        component="h2"
-                        sx={{
-                            fontSize: '1rem',
-                            textAlign: { xs: 'left', sm: 'center', },
-                        }}
-                    >
-                        Рахується зміна бюджету через інфляцію в порівнянні з попереднім місяцем
-                    </Typography>
-
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            mt: 3,
-                        }}
-                    >
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleSubmitData}
-                        >
-                            Надіслати
-                        </Button>
-                        <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={() => setDataModalOpen(false)}
-                        >
-                            Скасувати
-                        </Button>
-                    </Box>
-                </Box>
-            </Modal>
 
             <Box
                 sx={{
@@ -307,6 +188,26 @@ function BudgetTracker() {
                     </Select>
                 </Box>
             </Box>
+
+            <Button
+                variant="contained"
+                color="primary"
+                sx={{ my: 2 }}
+                onClick={handleSubmitData}
+            >
+                Інфляційна аналітика
+            </Button>
+            <Typography
+                id="modal-title"
+                component="h2"
+                sx={{
+                    fontSize: '1rem',
+                    textAlign: { xs: 'left', sm: 'center', },
+                }}
+            >
+                Рахується зміна бюджету через інфляцію в порівнянні з попереднім місяцем
+            </Typography>
+
             <TransactionSummary income={filteredIncome} outcome={filteredOutcome} />
 
             <Box sx={{ mb: 4 }}>
@@ -327,14 +228,6 @@ function BudgetTracker() {
 
             {analysisData && (
                 <Box sx={{ mt: 4 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
-                        Аналітичні Інсайти
-                    </Typography>
-
-                    <CategoryExpenseChart data={analysisData.categoryStats} />
-
-                    <IncomeComparisonChart data={analysisData.monthlyIncome} />
-
                     <Typography variant="h6" sx={{ fontWeight: 600, mb: 2 }}>
                         Пояснення для аналізу
                     </Typography>

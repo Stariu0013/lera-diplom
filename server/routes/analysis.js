@@ -46,7 +46,8 @@ router.post('/analysis', async (req, res) => {
                 overBudget
             },
             categoryStats,
-            monthlyIncome: incomeByMonth
+            monthlyIncome: incomeByMonth,
+            inflationRate: (STATIC_INFLATION_RATE - inflationRate),
         });
     } catch (err) {
         console.error(err);
