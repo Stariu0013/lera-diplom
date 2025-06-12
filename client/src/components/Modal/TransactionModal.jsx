@@ -110,7 +110,7 @@ function TransactionModal({open, onClose, modalType, categories, onSubmit}) {
                     variant="h6"
                     sx={{mb: 3, fontWeight: 'bold', textAlign: 'center'}}
                 >
-                    {modalType === 'add' ? 'Додати дохід' : 'Додати витрату'}
+                    {modalType === 'income' ? 'Додати дохід' : 'Додати витрату'}
                 </Typography>
 
                 <Box sx={{mb: 3}}>

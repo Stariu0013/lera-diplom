@@ -12,8 +12,6 @@ import TransactionControls from '../../components/TransactionControls/Transactio
 import FileUploader from '../../components/FileUploader/FileUploader.jsx';
 import IncomeChart from "../../components/Chart/IncomeChart.jsx";
 import axiosInstance from "../../helpers/axios.js";
-import CategoryExpenseChart from "../../components/Chart/CategoryExpenseChart.jsx";
-import IncomeComparisonChart from "../../components/Chart/IncomeComparisonChart.jsx";
 import { getCategoryInsights, getOverBudgetMessage } from "../../utils/getCategoryInsights.js";
 
 function BudgetTracker() {
@@ -21,14 +19,11 @@ function BudgetTracker() {
 
     const [modalOpen, setModalOpen] = useState(false);
     const [modalType, setModalType] = useState('income');
-    const [dataModalOpen, setDataModalOpen] = useState(false);
     const [budget, setBudget] = useState(0);
     const [csvFile, setCsvFile] = useState(null);
     const [analysisData, setAnalysisData] = useState(null);
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-    const [errors, setErrors] = useState({ budget: '', months: '' });
-    const [isUseIncome, setIsUseIncome] = useState(false);
 
     const years = Array.from(new Set(transactions.map(t => new Date(t.createdAt).getFullYear())));
 
@@ -71,7 +66,6 @@ function BudgetTracker() {
             response => {
                 setAnalysisData(response.data);
                 toast.success('Дані для аналізу успішно надіслані!');
-                setDataModalOpen(false);
                 setBudget(0);
             },
             () => {
@@ -100,7 +94,7 @@ function BudgetTracker() {
     const overBudgetMessage = analysisData ?
         getOverBudgetMessage(
             analysisData.forecast.overBudget,
-            analysisData.forecast.averageExpense,
+            filteredOutcome < 0 ? filteredIncome + filteredOutcome : filteredIncome - filteredOutcome,
             analysisData.forecast.predictedExpense,
             analysisData.monthlyIncome["2025-06"],
             analysisData.inflationRate
