@@ -23,14 +23,14 @@ router.post('/subscribe', async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: 'budgettracker65@gmail.com',
+                user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
             },
         });
 
         const mailOptions = {
             from: 'budgettracker65@gmail.com',
-            to: 'busygirl2003@gmail.com',
+            to: email,
             subject: `Нагадування про регулярний платіж - ${type}`,
             text: `
 Вітаємо!
