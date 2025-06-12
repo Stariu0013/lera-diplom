@@ -18,40 +18,40 @@ router.post('/subscribe', async (req, res) => {
             price,
         });
 
-        await subscription.save();
+//         await subscription.save();
+//
+//         const transporter = nodemailer.createTransport({
+//             service: 'Gmail',
+//             auth: {
+//                 user: process.env.EMAIL_USER,
+//                 pass: process.env.EMAIL_PASS,
+//             },
+//         });
+//
+//         const mailOptions = {
+//             from: 'budgettracker65@gmail.com',
+//             to: email,
+//             subject: `Нагадування про регулярний платіж - ${type}`,
+//             text: `
+// Вітаємо!
+//
+// Ми нагадуємо про Ваш регулярний платіж у категорії ${type}.
+//
+// Дата наступного платежу: ${date}.
+// Сума платежу становить: ${price} грн.
+//
+// Дякуємо, що користуєтесь нашими послугами!
+//
+// У разі неактуальності нагадувань, просимо Вас внести зміни в налаштування профілю!
+//
+// Гарного дня!
+//             `,
+//         };
+//
+//         // Send subscription confirmation email
+//         await transporter.sendMail(mailOptions);
 
-        const transporter = nodemailer.createTransport({
-            service: 'Gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
-
-        const mailOptions = {
-            from: 'budgettracker65@gmail.com',
-            to: email,
-            subject: `Нагадування про регулярний платіж - ${type}`,
-            text: `
-Вітаємо!
-
-Ми нагадуємо про Ваш регулярний платіж у категорії ${type}.
-
-Дата наступного платежу: ${date}.
-Сума платежу становить: ${price} грн.
-
-Дякуємо, що користуєтесь нашими послугами!
-
-У разі неактуальності нагадувань, просимо Вас внести зміни в налаштування профілю!
-
-Гарного дня!
-            `,
-        };
-
-        // Send subscription confirmation email
-        await transporter.sendMail(mailOptions);
-
-        res.status(200).json({ message: `Subscription email sent to ${email}` });
+        res.status(200).json({ message: `You are subscribed` });
     } catch (error) {
         console.error('Error processing subscription:', error);
 
