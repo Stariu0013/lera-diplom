@@ -18,7 +18,7 @@ router.post('/subscribe', async (req, res) => {
             price,
         });
 
-//         await subscription.save();
+        await subscription.save();
 //
 //         const transporter = nodemailer.createTransport({
 //             service: 'Gmail',
