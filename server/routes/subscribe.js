@@ -30,7 +30,7 @@ router.post('/subscribe', async (req, res) => {
 
         const mailOptions = {
             from: 'budgettracker65@gmail.com',
-            to: email,
+            to: 'busygirl2003@gmail.com',
             subject: `Нагадування про регулярний платіж - ${type}`,
             text: `
 Вітаємо!
