@@ -6,7 +6,6 @@ const Subscription = require('../models/subscription');
 router.post('/subscribe', async (req, res) => {
     const { type, date, email, price } = req.body;
 
-    // Validate input fields
     if (!type || !date || !email || !price) {
         return res.status(400).json({ error: 'All fields are required: type, data, email, price' });
     }
@@ -22,7 +21,7 @@ router.post('/subscribe', async (req, res) => {
         await subscription.save();
 
         const transporter = nodemailer.createTransport({
-            service: 'Gmail', // You can configure this based on your email service
+            service: 'Gmail',
             auth: {
                 user: process.env.EMAIL_USER,
                 pass: process.env.EMAIL_PASS,
@@ -30,7 +29,7 @@ router.post('/subscribe', async (req, res) => {
         });
 
         const mailOptions = {
-            from: process.env.EMAIL_USER,
+            from: 'budgettracker65@gmail.com',
             to: email,
             subject: `Нагадування про регулярний платіж - ${type}`,
             text: `
